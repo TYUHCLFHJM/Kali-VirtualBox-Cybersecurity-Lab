@@ -1,143 +1,262 @@
-# Cybersecurity Lab Setup — VirtualBox & Kali Linux
+# Kali Linux & VirtualBox Cybersecurity Lab
 
-A documented beginner cybersecurity lab using **Oracle VirtualBox** on Windows and **Kali Linux** as a virtual machine. This repository contains screenshots of the setup and connectivity tests for Week 1, Project Module 1.
+![VirtualBox](https://img.shields.io/badge/VirtualBox-7.2.22-blue)
+![Kali Linux](https://img.shields.io/badge/Kali-Linux-557C94)
+![Networking](https://img.shields.io/badge/Networking-NAT%20Network-green)
+![Project](https://img.shields.io/badge/Project-Week%201%20Lab-success)
 
-## Project objectives
+## Project Overview
+
+This project documents the installation, configuration, and verification of a virtual cybersecurity lab using **Oracle VirtualBox** and **Kali Linux**.
+
+The objective was to build a functional, isolated learning environment for cybersecurity practice while developing hands-on experience with virtualization, Linux networking, and troubleshooting.
+
+The lab includes a configured NAT Network, a static IPv4 address, internet connectivity verification, shared clipboard functionality, shared folders, and a clean system snapshot.
+
+---
+
+## Project Objectives
 
 - Install 7-Zip and Oracle VirtualBox.
-- Run Kali Linux as a virtual machine.
-- Configure a **NAT Network** with subnet `10.0.0.0/24`.
-- Assign Kali the static IPv4 address **`10.0.0.2/24`** with gateway **`10.0.0.1`**.
-- Confirm network and internet connectivity.
+- Set up Kali Linux as a virtual machine.
+- Configure a NAT Network using `10.0.0.0/24`.
+- Assign Kali Linux the static IP address `10.0.0.2/24`.
+- Verify communication with the gateway and the internet.
 - Enable bidirectional clipboard and drag-and-drop.
-- Share the Windows Downloads folder with Kali.
-- Create a clean VM snapshot.
+- Configure a shared folder between Windows and Kali Linux.
+- Create a clean snapshot for recovery.
 
-## Environment
+## Tools and Technologies
 
-| Component | Configuration |
+| Tool | Purpose |
 |---|---|
-| Host operating system | Windows |
-| Hypervisor | Oracle VirtualBox 7.2.22 |
-| Guest operating system | Kali Linux (VM: `Fayrouz`) |
-| Virtual network mode | NAT Network (`NatNetwork`) |
-| Subnet | `10.0.0.0/24` |
-| Kali IPv4 | `10.0.0.2/24` |
+| Oracle VirtualBox 7.2.22 | Virtualization platform |
+| Kali Linux | Cybersecurity testing environment |
+| Windows | Host operating system |
+| 7-Zip 26.05 | Archive extraction |
+| Linux Terminal | System configuration and verification |
+| NetworkManager | Static IP configuration |
+| GitHub | Project documentation and version control |
+
+---
+
+# Phase 1 — Environment Setup
+
+## 1. Installing 7-Zip
+
+7-Zip was installed to support the extraction of compressed files used during lab preparation.
+
+![7-Zip installation](01-7zip-installed.png)
+
+## 2. Installing Oracle VirtualBox
+
+Oracle VirtualBox version **7.2.22** was installed on the Windows host.
+
+![VirtualBox version](02-virtualbox-version.png)
+
+## 3. Configuring the Kali Linux Virtual Machine
+
+A Kali Linux virtual machine named **Fayrouz** was configured in VirtualBox.
+
+![Kali VM configuration](03-kali-vm-configuration.png)
+
+## 4. Starting Kali Linux
+
+The virtual machine was successfully started, and the Kali Linux desktop loaded.
+
+![Kali Linux desktop](04-kali-desktop.png)
+
+---
+
+# Phase 2 — Network Configuration
+
+## 5. Creating the NAT Network
+
+A VirtualBox NAT Network was configured using the following IPv4 subnet:
+
+`10.0.0.0/24`
+
+NAT Network mode allows virtual machines connected to the same virtual network to communicate while providing a route to external networks.
+
+![NAT Network configuration](05-nat-network-settings.png)
+
+## 6. Configuring the Virtual Network Adapter
+
+The Kali Linux virtual network adapter was attached to the configured NAT Network.
+
+![VirtualBox network adapter](06-vm-network-adapter.png)
+
+## 7. Assigning a Static IP Address
+
+Kali Linux was configured with these network settings:
+
+| Setting | Value |
+|---|---|
+| Interface | `eth0` |
+| IPv4 address | `10.0.0.2` |
+| Subnet mask | `/24` |
 | Default gateway | `10.0.0.1` |
-| Shared folder | Windows Downloads → `/media/sf_Downloads` |
+| DNS server | `8.8.8.8` |
 
-## Setup and evidence
-
-### 1. Install prerequisites
-
-Installed 7-Zip and VirtualBox, then prepared the Kali Linux virtual machine.
-
-![7-Zip installation](screenshots/01-7zip-installed.png)
-
-![VirtualBox version](screenshots/02-virtualbox-version.png)
-
-### 2. Configure and start Kali Linux
-
-The guest VM is configured as a 64-bit Debian-family Linux system and boots to the Kali desktop.
-
-![VM settings](screenshots/03-kali-vm-configuration.png)
-
-![Kali desktop](screenshots/04-kali-desktop.png)
-
-### 3. Configure the NAT Network
-
-Created/selected a VirtualBox **NAT Network** named `NatNetwork` using `10.0.0.0/24` with DHCP enabled. The VM's first network adapter is attached to this NAT Network.
-
-![NAT Network settings](screenshots/05-nat-network-settings.png)
-
-![VM adapter](screenshots/06-vm-network-adapter.png)
-
-### 4. Configure Kali's IP address
-
-Set the Kali interface `eth0` to the static address `10.0.0.2/24` with gateway `10.0.0.1`. Verified the address and routing table using:
+The following commands were used to inspect the configuration:
 
 ```bash
 ip a
 ip route
 ```
 
-![IP and route](screenshots/07-static-ip-and-route.png)
+![Static IP and routing](07-static-ip-and-route.png)
 
-### 5. Verify connectivity
+## 8. Testing Gateway Connectivity
 
-Tested access to the NAT gateway, a public IP address, and a hostname:
+The connection between Kali Linux and the virtual gateway was tested using:
 
 ```bash
 ping -c 3 10.0.0.1
+```
+
+The test returned successful replies, confirming gateway connectivity.
+
+![Gateway connectivity](08-gateway-connectivity.png)
+
+## 9. Testing Internet Connectivity
+
+External network connectivity was tested with:
+
+```bash
 ping -c 3 8.8.8.8
 ping -c 3 google.com
 ```
 
-The screenshots show successful replies and **0% packet loss** in the displayed tests. The hostname test also confirms DNS resolution worked at the time of testing.
+Successful replies confirmed internet access and DNS name resolution.
 
-![Gateway test](screenshots/08-gateway-connectivity.png)
+![Internet connectivity](09-internet-connectivity.png)
 
-![Internet tests](screenshots/09-internet-connectivity.png)
+## 10. Final Network Verification
 
-![Final IP and internet test](screenshots/10-final-ip-and-google-ping.png)
+The configured static IP address and internet connectivity were verified together.
 
-### 6. Enable integration features
+![Final IP and connectivity verification](10-final-ip-and-google-ping.png)
 
-Configured **Shared Clipboard** and **Drag-and-Drop** to **Bidirectional** in VirtualBox settings. Clipboard examples demonstrate text transferred between Windows and Kali.
+---
 
-![Integration settings](screenshots/11-clipboard-dragdrop-settings.png)
+# Phase 3 — Virtual Machine Integration
 
-![Clipboard example 1](screenshots/14-clipboard-test-kali-to-windows.png)
+## 11. Enabling Shared Clipboard and Drag-and-Drop
 
-![Clipboard example 2](screenshots/15-clipboard-test-windows-to-kali.png)
+The following VirtualBox settings were enabled:
 
-### 7. Configure a shared folder
+- **Shared Clipboard:** Bidirectional
+- **Drag-and-Drop:** Bidirectional
 
-Shared the Windows Downloads folder with Kali using the VirtualBox shared-folder feature. **Auto-mount** and **Make Machine-permanent** are enabled. The Linux shared-folder mount is available at `/media/sf_Downloads`.
+These settings allow supported content to be transferred between the Windows host and Kali Linux guest.
 
-![Shared folder](screenshots/12-shared-folder-config.png)
+![Clipboard and drag-and-drop settings](11-clipboard-dragdrop-settings.png)
 
-![Shared folder options](screenshots/13-shared-folder-options.png)
+## 12. Configuring a Shared Folder
 
-The screenshots below demonstrate access to the mounted shared folder from Kali. The final filtered listing confirms that files from the Windows Downloads directory are visible inside the guest:
+The Windows Downloads folder was configured as a VirtualBox shared folder.
 
-![Windows and Kali](screenshots/16-windows-kali-file-transfer.png)
+![Shared folder configuration](12-shared-folder-config.png)
 
-![Filtered shared-folder verification](screenshots/18-shared-folder-filtered-verification.png)
+## 13. Configuring Shared Folder Options
 
-### 8. Save a clean snapshot
+The shared folder was configured with automatic mounting and permanent availability.
 
-Created a snapshot named **Clean lab setup** to preserve the VM state for future lab exercises.
+![Shared folder options](13-shared-folder-options.png)
 
-![Snapshot](screenshots/17-clean-lab-snapshot.png)
+## 14. Testing Clipboard Integration
 
-## Results
+Clipboard functionality was tested between Kali Linux and Windows.
 
-| Requirement | Evidence |
-|---|---|
-| VirtualBox and Kali setup | Screenshots 02–04 |
-| NAT Network `10.0.0.0/24` | Screenshots 05–06 |
-| Static Kali IP `10.0.0.2/24` | Screenshots 07 and 10 |
-| Gateway connectivity | Screenshot 08 |
-| Internet and DNS connectivity | Screenshots 09–10 |
-| Bidirectional clipboard configured/tested | Screenshots 11, 14–15 |
-| Drag-and-drop enabled | Screenshot 11 (configuration) |
-| Shared Downloads folder configured and accessible | Screenshots 12–13, 16 and 18 |
-| Clean snapshot | Screenshot 17 |
+### Kali Linux to Windows
 
-**Note:** The screenshots establish that drag-and-drop was enabled; they do not independently prove a drag-and-drop operation succeeded. The shared-folder screenshots show configuration and successful directory access from Kali. This verifies that the host files are visible inside the guest; it does not independently demonstrate drag-and-drop file transfer.
+![Clipboard test Kali to Windows](14-clipboard-test-kali-to-windows.png)
 
-## Repository layout
+### Windows to Kali Linux
 
-```text
-Kali-VirtualBox-Cybersecurity-Lab/
-├── README.md
-└── screenshots/
-    ├── 01-7zip-installed.png
-    ├── 02-virtualbox-version.png
-    └── ... 18 numbered screenshots
+![Clipboard test Windows to Kali](15-clipboard-test-windows-to-kali.png)
+
+---
+
+# Phase 4 — Verification and Recovery
+
+## Shared Folder Verification
+
+The shared folder was accessed from Kali Linux at:
+
+```bash
+/media/sf_Downloads
 ```
 
-## Safety and scope
+The following command was used to list shared files:
 
-This is a local virtual-machine lab for learning and authorized security testing. No external targets are involved in this setup documentation.
+```bash
+ls /media/sf_Downloads
+```
+
+This verified that Kali Linux could access files from the Windows host.
+
+## Clean System Snapshot
+
+A VirtualBox snapshot named **Clean lab setup** was created.
+
+The snapshot provides a recovery point that can be used to restore the virtual machine to a known state.
+
+---
+
+# Troubleshooting Experience
+
+During the lab setup, network connectivity issues were encountered and investigated.
+
+Troubleshooting included:
+
+- Comparing NAT and NAT Network behavior.
+- Inspecting the Kali Linux IP address and routing table.
+- Testing gateway and external connectivity using `ping`.
+- Checking VirtualBox NAT Network and DHCP configuration.
+- Reviewing the Windows-side VirtualBox networking processes.
+- Verifying the final network configuration after adjustments.
+
+This process provided practical experience in identifying and diagnosing virtual network connectivity problems.
+
+---
+
+# Project Results
+
+| Requirement | Result |
+|---|---|
+| 7-Zip installation | ✅ Completed |
+| VirtualBox installation | ✅ Completed |
+| Kali Linux virtual machine | ✅ Completed |
+| NAT Network configuration | ✅ Completed |
+| Static IP `10.0.0.2/24` | ✅ Verified |
+| Gateway connectivity | ✅ Verified |
+| Internet connectivity | ✅ Verified |
+| Shared clipboard | ✅ Tested |
+| Drag-and-drop configuration | ✅ Enabled |
+| Shared folder | ✅ Verified |
+| Clean snapshot | ✅ Created |
+
+---
+
+# Skills Developed
+
+- Virtual machine deployment and management
+- VirtualBox NAT networking
+- Linux IPv4 addressing and routing
+- Network connectivity troubleshooting
+- Linux command-line operations
+- Host–guest file sharing
+- Snapshot creation and recovery planning
+- Technical documentation using GitHub
+
+---
+
+## Conclusion
+
+This project established a working Kali Linux virtual lab using Oracle VirtualBox.
+
+The completed environment provides a foundation for future cybersecurity exercises involving Linux administration, networking, system analysis, and security testing within an authorized lab environment.
+
+**Project:** Week 1 — VirtualBox and Kali Linux Lab Setup
